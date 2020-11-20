@@ -13,6 +13,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import com.rn1.publisher.R
 import com.rn1.publisher.databinding.FragmentHomeBinding
 import com.rn1.publisher.model.Article
@@ -47,7 +48,7 @@ class HomeFragment : Fragment() {
         /**
          * get article start
          */
-        colRefArticle.get().addOnSuccessListener {
+        colRefArticle.orderBy("createdTime", Query.Direction.DESCENDING).get().addOnSuccessListener {
             val articleList = it.toObjects(Article::class.java)
             if (articleList.size > 0) {
                 adapter.submitList(articleList)
@@ -60,7 +61,7 @@ class HomeFragment : Fragment() {
          */
         binding.layoutSwipeRefreshHome.setOnRefreshListener {
             binding.layoutSwipeRefreshHome.isRefreshing = true
-            colRefArticle.addSnapshotListener { snapshots, error ->
+            colRefArticle.orderBy("createdTime", Query.Direction.DESCENDING).addSnapshotListener { snapshots, error ->
 
                 if (error != null) {
                     Log.w("error!!", "listen:error", error)
